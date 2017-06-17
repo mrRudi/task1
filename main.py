@@ -1,8 +1,9 @@
-from collections import Counter
 from pprint import pprint
 
 
 def update(data, new_service, count):
+    if not data:
+        data['default'] = {}
 
     def add_count(host, service, values):
         if service in data[host]:
@@ -96,28 +97,12 @@ def update(data, new_service, count):
 
 def main():
     example_data = {
-        'ginger1': {
-            'django': 2,
-        },
-        'ginger2': {
-            'flask': 5,
-            'django': 3,
-        },
-
-        'ginger3': {
-            'flask': 18,
-            'django': 2,
-        },
-        'ginger4': {
-            'flask': 5,
-            'django': 3,
-        },
     }
 
     print("Configuration before:")
     pprint(example_data)
 
-    update(example_data, 'pylons', 14)
+    update(example_data, 'pylons', 12)
 
     print("Configuration after:")
     pprint(example_data)

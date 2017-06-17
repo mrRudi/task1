@@ -2,6 +2,8 @@ import itertools
 import pytest
 import main
 
+# запуск тестів: py.test -v -s
+
 
 def test_update():
     config = {
@@ -25,6 +27,56 @@ def test_update():
             'flask': 1,
             'pylons': 6,
         },
+    } or config == {
+        'ginger': {
+            'django': 2,
+            'flask': 3,
+            'pylons': 2,
+        },
+        'cucumber': {
+            'flask': 1,
+            'pylons': 5,
+        },
+    }
+
+    config = {
+        'ginger1': {
+            'django': 2,
+        },
+        'ginger2': {
+            'flask': 5,
+            'django': 3,
+        },
+
+        'ginger3': {
+            'flask': 18,
+            'django': 2,
+        },
+        'ginger4': {
+            'flask': 5,
+            'django': 3,
+        },
+    }
+    main.update(config, 'pylons', 12)
+    assert config == {
+        'ginger1': {
+            'django': 2,
+            'pylons': 8
+        },
+        'ginger2': {
+            'django': 3,
+            'flask': 5,
+            'pylons': 2
+        },
+        'ginger3': {
+            'django': 2,
+            'flask': 18
+        },
+        'ginger4': {
+            'django': 3,
+            'flask': 5,
+            'pylons': 2
+        }
     }
 
 
@@ -41,9 +93,7 @@ def test_initial():
     assert sum(sum(x.values()) for x in config.values()) == 3+3
 
 
-@pytest.mark.xfail(reason="Advanced test. Optional to implement")
 def test_predictable_config():
-    permutations = []
     services = [
         ('flask', 7),
         ('django', 13),
@@ -58,6 +108,3 @@ def test_predictable_config():
         for svc, num in permutation:
             main.update(config, svc, num)
         assert sum(sum(x.values()) for x in config.values()) == 7+13+17
-        permutations.append(config)
-
-    assert all(p == permutations[0] for p in permutations[1:])
